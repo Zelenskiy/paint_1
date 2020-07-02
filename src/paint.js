@@ -997,8 +997,8 @@ PaintJS.prototype = {
 		this.brushColor    = this.brushColor    || "#000000";
 		this.paletteColors = this.paletteColors || this.defaultPaletteColors;
 		this.brushes       = this.brushes       || this.initialBrushes();
-
 		this.arrow 		   = false;
+
 
 		if (this.brush) {
 			this.brushes.unshift(brush);
