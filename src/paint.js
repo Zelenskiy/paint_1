@@ -44,7 +44,6 @@ function PaintJS(config) {
 	this.init();
 }
 
-var tmpImageData;
 
 PaintJS.prototype = {
 	isBeingResized: false,
@@ -82,6 +81,9 @@ PaintJS.prototype = {
 		height: 0,
 		width: 0
 	},
+
+
+
 	createResizeButtons: function() {
 		var width  = 8;
 		var height = 8;
@@ -225,6 +227,11 @@ PaintJS.prototype = {
 			"border": "1px solid rgba(0, 0, 0, 0.2)",
 			"padding": "4px"
 		});
+		// console.log(brush);
+		let n = brush.id.indexOf("_")+1;
+		let id = parseInt(brush.id.substring(n));
+		console.log(id);
+		refreshPanels(id);
 	},
 	initialBrushes: function() {
 		var defaultBrush = new PaintJSBrush({
@@ -234,29 +241,30 @@ PaintJS.prototype = {
 				x: 0,
 				y: 0
 			},
+
 			draw: function(x, y) {
 				var ctx        = this.paintJS.ctx;
 				var brushColor = this.paintJS.brushColor;
-
 				ctx.beginPath();
 				ctx.lineJoin    = "round";
 				ctx.lineWidth   = this.paintJS.brushSize;
 				ctx.strokeStyle = brushColor;
-
+				ctx.setLineDash([0, 0]);
 				ctx.moveTo(this.previous.x, this.previous.y);
 				ctx.lineTo(x, y);
 				ctx.closePath();
 				ctx.stroke();
 			},
+
 			mousedown: function(e) {
 				this.previous = {
 					x: e.x - 0.5,
 					y: e.y - 0.5
 				};
-
 				this.draw(e.x + 0.5, e.y);
 				this.mouseIsDown = true;
 			},
+
 			mousemove: function(e) {
 				if (this.mouseIsDown) {
 					this.draw(e.x, e.y);
@@ -267,6 +275,7 @@ PaintJS.prototype = {
 					};
 				}
 			},
+
 			mouseup: function(e) {
 				if (this.mouseIsDown) {
 					// if mousedown is true, the mouseup meant that user had drawn something
@@ -376,6 +385,7 @@ PaintJS.prototype = {
 				var timeTaken = (new Date().getTime() - start).toString();
 				console.log("Fill brush took %s milliseconds", timeTaken);
 				this.paintJS.canvasHistory.addStage();
+
 			}
 		});
 
@@ -389,7 +399,7 @@ PaintJS.prototype = {
 				ctx.beginPath();
 				ctx.lineJoin  = "round";
 				ctx.lineWidth = radius;
-
+				ctx.setLineDash([0, 0]);
 				ctx.moveTo(this.previous.x, this.previous.y);
 				ctx.lineTo(x, y);
 				ctx.closePath();
@@ -404,6 +414,7 @@ PaintJS.prototype = {
 
 				this.erase(e.x, e.y);
 				this.mouseIsDown = true;
+
 			},
 			mousemove: function(e) {
 				if (this.mouseIsDown) {
@@ -454,7 +465,6 @@ PaintJS.prototype = {
 					y: e.y - 1
 				};
 				let ctx        = this.paintJS.ctx;
-				console.log("fkfkfkdslfdkdflfklkldf");
 				// tmpImageData = undefined;
 				// this.erase(e.x, e.y);
 				this.mouseIsDown = true;
@@ -503,7 +513,20 @@ PaintJS.prototype = {
 				ctx.beginPath();
 				ctx.lineJoin  = "round";
 				ctx.lineWidth   = this.paintJS.brushSize;
-				ctx.setLineDash([0, 0]);
+				switch (this.paintJS.lineMode) {
+					case "0":
+						ctx.setLineDash([0, 0]);
+						break;
+					case "1":
+						ctx.setLineDash([4, 16]);
+						break;
+					case "2":
+						ctx.setLineDash([12, 16]);
+						break;
+					case "3":
+						ctx.setLineDash([32, 32]);
+						break;
+				}
 				ctx.lineDashOffset = 0;
 				ctx.strokeStyle = brushColor;
 				let w = Math.abs(this.previous.x - x);
@@ -520,7 +543,7 @@ PaintJS.prototype = {
 					y: e.y - 1
 				};
 				let ctx        = this.paintJS.ctx;
-				console.log("fkfkfkdslfdkdflfklkldf");
+
 				// tmpImageData = undefined;
 				// this.erase(e.x, e.y);
 				this.mouseIsDown = true;
@@ -569,7 +592,20 @@ PaintJS.prototype = {
 				ctx.beginPath();
 				ctx.lineJoin  = "round";
 				ctx.lineWidth   = this.paintJS.brushSize;
-				ctx.setLineDash([0, 0]);
+				switch (this.paintJS.lineMode) {
+					case "0":
+						ctx.setLineDash([0, 0]);
+						break;
+					case "1":
+						ctx.setLineDash([4, 16]);
+						break;
+					case "2":
+						ctx.setLineDash([12, 16]);
+						break;
+					case "3":
+						ctx.setLineDash([32, 32]);
+						break;
+				}
 				ctx.lineDashOffset = 0;
 				ctx.strokeStyle = brushColor;
 				let w = Math.abs(this.previous.x - x);
@@ -586,7 +622,7 @@ PaintJS.prototype = {
 					y: e.y - 1
 				};
 				let ctx        = this.paintJS.ctx;
-				console.log("fkfkfkdslfdkdflfklkldf");
+
 				// tmpImageData = undefined;
 				// this.erase(e.x, e.y);
 				this.mouseIsDown = true;
@@ -611,6 +647,7 @@ PaintJS.prototype = {
 					// 	y: e.y
 					// }
 				}
+				this.paintJS.tool = 6;
 			},
 			mouseup: function() {
 				if (this.mouseIsDown) {
@@ -635,7 +672,21 @@ PaintJS.prototype = {
 				ctx.beginPath();
 				ctx.lineJoin  = "round";
 				ctx.lineWidth   = this.paintJS.brushSize;
-				ctx.setLineDash([0, 0]);
+				switch (this.paintJS.lineMode) {
+					case "0":
+						ctx.setLineDash([0, 0]);
+						break;
+					case "1":
+						ctx.setLineDash([4, 16]);
+						break;
+					case "2":
+						ctx.setLineDash([12, 16]);
+						break;
+					case "3":
+						ctx.setLineDash([32, 32]);
+						break;
+				}
+				// ctx.setLineDash([0, 0]);
 				ctx.lineDashOffset = 0;
 				ctx.strokeStyle = brushColor;
 				let w = Math.abs(this.previous.x - x);
@@ -660,7 +711,7 @@ PaintJS.prototype = {
 					y: e.y - 1
 				};
 				let ctx        = this.paintJS.ctx;
-				console.log("fkfkfkdslfdkdflfklkldf");
+
 				// tmpImageData = undefined;
 				// this.erase(e.x, e.y);
 				this.mouseIsDown = true;
@@ -671,6 +722,8 @@ PaintJS.prototype = {
 				//зберегти фрагмент
 				tmpImageData =  ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
 				//
+
+
 
 			},
 			mousemove: function(e) {
@@ -715,7 +768,8 @@ PaintJS.prototype = {
 			},
 			mousedown: function(e) {
 				this.paintJS.setColor(this.getColor(e.x, e.y));
-				this.mouseIsDown = true; 
+				this.mouseIsDown = true;
+
 			},
 			mousemove: function(e) {
 				if (this.mouseIsDown) {
@@ -743,14 +797,15 @@ PaintJS.prototype = {
 			"float": "right"
 		}).appendTo(this.navbar);
 
-		for (var i = 0; i < brushes.length; i++) {
-			var brushObject = this.brushes[i];
+		for (let i = 0; i < brushes.length; i++) {
+			let brushObject = this.brushes[i];
 			brushObject.paintJS = this;
 
-			var brushDiv = document.createElement("div");
-			var brushIcon = new Image(32, 32);
+			let brushDiv = document.createElement("div");
+			let brushIcon = new Image(32, 32);
 			brushIcon.src = brushObject.icon;
 
+			brushDiv.id = "btnBrushId_"+i;
 			$(brushDiv).append(brushIcon).appendTo(brushesContainer).css({
 				"margin": "5px",
 				"padding": "5px",
@@ -775,14 +830,14 @@ PaintJS.prototype = {
 			return false;
 		}
 
-		var paintContainer = this.paintContainer;
+		let paintContainer = this.paintContainer;
 		if (!paintContainer) {
 			console.error("Could not initCanvas() since canvas container is not set. Please set canvas using PaintJS.canvas = canvas (where canvas is node or selector string)");
 			return false;
 		}
 
 		//Границі навколо полотна
-		var canvasContainer = document.createElement("div");
+		let canvasContainer = document.createElement("div");
 		$(canvasContainer).css({
 			"background": "gray",
 			"width": "calc(100% - 40px)",
@@ -793,7 +848,7 @@ PaintJS.prototype = {
 			"overflow": "auto"
 		});
 
-		var canvasWrapper = document.createElement("div");
+		let canvasWrapper = document.createElement("div");
 		$(canvasWrapper).css({
 			"position": "relative",
 			"display": "inline-block",
@@ -802,10 +857,10 @@ PaintJS.prototype = {
 			"overflow": "hidden",
 			"background": "white" // so that if user resizes it to bigger size than it was, the blank space will be white
 		});
-		var resizeButtons = this.createResizeButtons();
+		let resizeButtons = this.createResizeButtons();
 		$(canvasWrapper).append(resizeButtons);
 
-		var brush = document.createElement("div");
+		let brush = document.createElement("div");
 		$(brush).css({
 			"background": "url(" + this.brush.brushIcon + ")",
 			"background-size": "cover",
@@ -921,6 +976,8 @@ PaintJS.prototype = {
 		zoomIn.paintJS = this;
 		zoomOut.paintJS = this;
 
+		//функції масштабування
+
 		$(zoomIn).click(function() {
 			var zoom = this.paintJS.zoom;
 			zoom *= 2;
@@ -943,7 +1000,22 @@ PaintJS.prototype = {
 			'<input type="number" class="brush-size-changer-value" />' +
 		'</div>'
 		);
-		
+
+		//Зміна типу лінії
+		var lineModeChanger = $(
+		'<div class="line-mode-changer" id="line-mode-id">' +
+			'<input type="range" class="line-mode-changer-dragger" />' +
+			'<input type="number" class="line-mode-changer-value" />' +
+		'</div>'
+		);
+
+		//Стрілка на лінії
+		var lineArrowChanger = $(
+		'<div class="line-arrow-changer" id="line-arrow-id">' +
+			'<input type="checkbox" class="line-arrow-changer-radio" />' +
+		'</div>'
+		);
+
 		brushSizeChanger.css({
 			"float": "left",
 			"margin-top": "16.5px",
@@ -951,7 +1023,7 @@ PaintJS.prototype = {
 			"padding": "5px",
 			"background": "rgba(255, 255, 255, 0.5)"
 		});
-		
+
 		brushSizeChanger.find("input").css({
 			"float": "left",
 			"display": "block",
@@ -963,7 +1035,7 @@ PaintJS.prototype = {
 			$(this).parent().find(".brush-size-changer-value").val(this.value);
 			this.paintJS.brushSize = this.value;
 		}).css({
-			"width": "100px",
+			"width": "75px",
 			"margin": "0 5px"
 		})
 		
@@ -980,6 +1052,86 @@ PaintJS.prototype = {
 		$(navbar).append(palette, currentColor);
 		this.initBrushes();
 		$(navbar).append(zoomContainer, brushSizeChanger);
+
+		//=================
+		lineModeChanger.css({
+			"float": "left",
+			"margin-top": "16.5px",
+			"border": "1px solid rgba(0, 0, 0, 0.2)",
+			"padding": "5px",
+			"background": "rgba(255, 255, 255, 0.5)"
+			,"visibility": "hidden"
+		});
+
+		lineModeChanger.find("input").css({
+			"float": "left",
+			"display": "block",
+			"height": "22px",
+			"box-sizing": "border-box"
+
+		}).prop("paintJS", this);
+
+		lineModeChanger.find(".line-mode-changer-dragger").prop("max", 3).on("input", function() {
+			$(this).parent().find(".line-mode-changer-value").val(this.value);
+			this.paintJS.lineMode = this.value;
+		}).css({
+			// "padding-left": "200px",
+			"width": "75px",
+			"margin": "0 5px"
+		})
+
+		lineModeChanger.find(".line-mode-changer-value").css({
+			"width": "50px"
+		}).on("input", function() {
+			$(this).parent().find(".line-mode-changer-dragger").val(this.value);
+			this.paintJS.lineMode = this.value;
+		});
+
+		lineModeChanger.find(".line-mode-changer-value").val(this.lineMode);
+		lineModeChanger.find(".line-mode-changer-dragger").val(this.lineMode);
+		//====================
+		lineArrowChanger.css({
+			"float": "left",
+			"margin-top": "16.5px",
+			"border": "1px solid rgba(0, 0, 0, 0.2)",
+			"padding": "5px",
+			"background": "rgba(255, 255, 255, 0.5)"
+			,"visibility": "hidden"
+		});
+
+		lineArrowChanger.find("input").css({
+			"float": "left",
+			"display": "block",
+			"height": "16px",
+			"box-sizing": "border-box"
+
+		}).prop("paintJS", this);
+
+
+		lineArrowChanger.find(".line-arrow-changer-radio").css({
+			"width": "50px"
+		}).on("input", function() {
+			$(this).parent().find(".line-arrow-changer-radio").val(this.checked);
+			console.log("arrow");
+			console.log(this.checked);
+
+			// if (this.value == "on"){
+			// 	this.paintJS.arrow = true;
+			// } else {
+			// 	this.paintJS.arrow = false;
+			// }
+
+			this.paintJS.arrow = this.checked;
+		});
+
+		// lineArrowChanger.find(".line-arrow-changer-radio").val(this.arrow);
+
+		//====================
+
+
+		$(navbar).append(zoomContainer, lineModeChanger);
+		$(navbar).append(zoomContainer, lineArrowChanger);
+
 		$(canvasWrapper).append(canvas, brush);
 		$(canvasContainer).append(canvasWrapper);
 		$(paintContainer).append(navbar, canvasContainer);
@@ -1001,6 +1153,8 @@ PaintJS.prototype = {
 		this.arrow 		   = false;
 		this.width_procent = 100;
 		this.height_procent = 100;
+		this.lineMode = 0;
+
 
 
 		if (this.brush) {
@@ -1016,6 +1170,8 @@ PaintJS.prototype = {
 		$(document).mousedown(function(e) {
 			if (e.button == 0) {
 				object.mousedown(e);
+				console.log(e);
+				console.log(object);
 			} else {
 				object.rightMousedown(e);
 			}
@@ -1055,7 +1211,8 @@ PaintJS.prototype = {
 		&& !isNaN(parseInt(hex.slice(1), 16)); // the content without # has to be valid hexadecimal number
 	},
 	mousedown: function(e) {
-		// console.log("!!!!!!!!!!!!!!!!!!!!!!!");
+
+
 		var target = e.target;
 		if (target.isResizer) {
 			this.isBeingResized = true;
@@ -1171,6 +1328,20 @@ PaintJS.prototype = {
 			x: (e.pageX - $(this.brushNode.parentElement).offset().left) / this.zoom * 100,
 			y: (e.pageY - $(this.brushNode.parentElement).offset().top) / this.zoom * 100
 		});
+
+		// //=====================
+		// //Ховаємо панель типу ліній
+		// console.log("Ховаємо панель типу ліній");
+		// let elem = document.getElementById('line-mode-id');
+		// elem.style.visibility='hidden';
+		// switch (this.tool) {
+		// 	case 4: //Показуємо панель типу ліній
+		// 		console.log("Показуємо панель типу ліній");
+		// 		elem.style.visibility='visible';
+		// 		break;
+		// }
+
+
 	},
 	rightMousedown: function(e) {
 		e.preventDefault();
@@ -1434,6 +1605,8 @@ CanvasHistory.prototype = {
 
 // ========================================================================================================
 
+
+var tmpImageData;
 var br_masshtab = 5;
 var er_masshtab = 5;
 
@@ -1447,4 +1620,32 @@ function canvas_arrow(context, fromx, fromy, tox, toy) {
 	context.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
 	context.moveTo(tox, toy);
 	context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+}
+
+function refreshPanels(tool) {
+	//=====================
+	//Ховаємо панель типу ліній
+	console.log("Ховаємо панель типу ліній");
+	let elem = document.getElementById('line-mode-id');
+	let elemArrow = document.getElementById('line-arrow-id');
+	if (elem != null){
+		elem.style.visibility='hidden';
+		switch (tool) {
+			case 4:
+			case 5:
+			case 6: //Показуємо панель типу ліній
+				console.log("Показуємо панель типу ліній");
+				elem.style.visibility='visible';
+				break;
+		}
+	}
+	elem = document.getElementById('line-arrow-id');
+	if (elem != null){
+		elem.style.visibility='hidden';
+		switch (tool) {
+			case 4:
+				elem.style.visibility='visible';
+				break;
+		}
+	}
 }
