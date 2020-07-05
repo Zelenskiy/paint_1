@@ -997,7 +997,7 @@ PaintJS.prototype = {
 		var brushSizeChanger = $(
 		'<div class="brush-size-changer">' +
 			'<input type="range" class="brush-size-changer-dragger" />' +
-			'<input type="number" class="brush-size-changer-value" />' +
+			'<input type="number" class="brush-size-changer-value"  title="товщина ліній"/>' +
 		'</div>'
 		);
 
@@ -1005,14 +1005,14 @@ PaintJS.prototype = {
 		var lineModeChanger = $(
 		'<div class="line-mode-changer" id="line-mode-id">' +
 			'<input type="range" class="line-mode-changer-dragger" />' +
-			'<input type="number" class="line-mode-changer-value" />' +
+			'<input type="number" class="line-mode-changer-value"  title="тип лінії"/>' +
 		'</div>'
 		);
 
 		//Стрілка на лінії
 		var lineArrowChanger = $(
 		'<div class="line-arrow-changer" id="line-arrow-id">' +
-			'<input type="checkbox" class="line-arrow-changer-radio" />' +
+			'<input type="checkbox" class="line-arrow-changer-radio" title="стрілки"/>' +
 		'</div>'
 		);
 
@@ -1112,19 +1112,9 @@ PaintJS.prototype = {
 			"width": "50px"
 		}).on("input", function() {
 			$(this).parent().find(".line-arrow-changer-radio").val(this.checked);
-			console.log("arrow");
-			console.log(this.checked);
-
-			// if (this.value == "on"){
-			// 	this.paintJS.arrow = true;
-			// } else {
-			// 	this.paintJS.arrow = false;
-			// }
-
 			this.paintJS.arrow = this.checked;
 		});
 
-		// lineArrowChanger.find(".line-arrow-changer-radio").val(this.arrow);
 
 		//====================
 
@@ -1170,8 +1160,6 @@ PaintJS.prototype = {
 		$(document).mousedown(function(e) {
 			if (e.button == 0) {
 				object.mousedown(e);
-				console.log(e);
-				console.log(object);
 			} else {
 				object.rightMousedown(e);
 			}
@@ -1211,7 +1199,6 @@ PaintJS.prototype = {
 		&& !isNaN(parseInt(hex.slice(1), 16)); // the content without # has to be valid hexadecimal number
 	},
 	mousedown: function(e) {
-
 
 		var target = e.target;
 		if (target.isResizer) {
@@ -1414,6 +1401,16 @@ PaintJS.prototype = {
 		"CTRL+Y": function() {
 			this.canvasHistory.restoreFromNextStage();
 		},
+
+		"ALT+A": function() {
+			if (this.arrow == 0){
+				this.arrow = 1;
+			} else {
+				this.arrow = 0;
+			}
+
+		},
+
 	},
 	registerShortcut: function(shortcut, callback) {
 		if (typeof shortcut != "string" || typeof callback != "function") return;
@@ -1423,6 +1420,8 @@ PaintJS.prototype = {
 	deleteShortcut: function(shortcut) {
 		return !!this.shortcuts[shortcut] && delete this.shortcuts[shortcut];
 	},
+
+
 	keydown: function(e) {
 		var keyCode = e.keyCode || e.which;
 		this.keydowns[keyCode] = true;
@@ -1544,6 +1543,11 @@ function PaintJSBrush(config) {
 	for (var conf in config) {
 		this[conf] = config[conf];
 	}
+
+
+	// this.onpointerdown = config.mousedown || function() {};
+	// this.onpointermove = config.mousemove || function() {};
+	// this.onpointerup   = config.mouseup   || function() {};
 
 	this.mousedown = config.mousedown || function() {};
 	this.mousemove = config.mousemove || function() {};
