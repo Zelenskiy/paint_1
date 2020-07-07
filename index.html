@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="HandheldFriendly" content="true"/>
 	<title>Paint.js Example</title>
 </head>
 <style type="text/css">
@@ -26,9 +29,19 @@
 <script type="text/javascript" src="src/jscolor.js"></script>
 <script type="text/javascript" src="src/jquery.js"></script>
 <script type="text/javascript" src="src/paint.js?v=1"></script>
+<script type="text/javascript" src="src/draw_events.js?v=1"></script>
+<script type="text/javascript" src="src/def_brush.js?v=1"></script>
+<script type="text/javascript" src="src/hand_brush.js?v=1"></script>
+<script type="text/javascript" src="src/eraser_brush.js?v=1"></script>
+<script type="text/javascript" src="src/line_brush.js?v=1"></script>
 <script type="text/javascript">
 	var paint = new PaintJS({
 		paint: "#paint"
 	});
 </script>
+<script>
+	var supportsTouch = ('ontouchstart' in document.documentElement);
+	console.log(supportsTouch);
+</script>
+
 </html>
